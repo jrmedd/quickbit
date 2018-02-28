@@ -1,0 +1,63 @@
+@font-face {
+  src: url(Eleven.ttf);
+  font-family: 'Eleven';
+}
+
+body {
+  background: #000000;
+  color: #ffffff;
+  font-family: 'Eleven';
+}
+
+#gameArea {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+  height: 100vh;
+}
+
+#arrowDisplay {
+  margin: 0 auto;
+  text-align: center;
+  align-self: center;
+  font-size: 12em;
+}
+
+#score {
+  position: fixed;
+  bottom: 0;
+  left: 10%;
+  right: 10%;
+  line-height: 1.5em;
+  text-align: center;
+  font-size: 2em;
+}
+
+@-webkit-keyframes fadeout {
+  0% {opacity:1;}
+  100% {opacity:0;}
+}
+@keyframes fadeout {
+  0% {opacity:1;}
+  100% {opacity:0;}
+}
+.fadeOut {
+  -moz-animation   : fadeout .2s ease;
+  -webkit-animation: fadeout .2s ease;
+  animation        : fadeout .2s ease;
+  animation-fill-mode: forwards;
+}
+
+.standard {
+  color: #ffffff;
+}
+
+.fail {
+  color: #CB0000;
+}
+
+.success {
+  color: #9EE22E
+}

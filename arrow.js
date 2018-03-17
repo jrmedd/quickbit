@@ -1,20 +1,28 @@
-function Arrow(leftArrow, rightArrow) {
-  this.arrows = [leftArrow, rightArrow]; //set what gets displayed for left/right arrows
+function Arrow(leftArrow, rightArrow, upArrow, downArrow) {
+  this.arrows = [leftArrow, rightArrow, upArrow, downArrow]; //set what gets displayed for left/right arrows
   this.arrowDisplay = document.createElement("p"); //make a paragraph element
   this.arrowDisplay.id="arrowDisplay"; //give it the arrowDisplay id
   this.gameArea = document.getElementById("gameArea"); //get the game area
   this.gameArea.appendChild(this.arrowDisplay); //stick the arrow display in it
-  this.keyCodes = [37, 39]; //get two different keycode options
+  this.keyCodes = [37, 39, 38, 40]; //get four different keycode options
   this.chosenArrow; //arrow computer picks
   this.chosenKeycode; //its corrresponding keycode
   this.arrowElement = document.getElementById("arrowDisplay"); //arrowDisplay element for referral later
   this.arrowElement.style.opacity = 1; //make it VISIBLE
 
   //function to choose arrow
-  this.chooseArrow = function() {
-    this.leftOrRight = parseInt(Math.random()*arrow.arrows.length); //pick a random option
-    this.chosenArrow = this.arrows[this.leftOrRight]; //which arrow does it correspond to
-    this.chosenKeycode = this.keyCodes[this.leftOrRight] //what keycode does it correspond to
+  this.chooseArrow = function(score) {
+    if (score < 10) {
+      this.whichArrow = parseInt(Math.random()*arrow.arrows.length/2);
+    }
+    else if (score < 20) {
+      this.whichArrow = parseInt(Math.random()*arrow.arrows.length/2)+2;
+    }
+    else {
+      this.whichArrow = parseInt(Math.random()*arrow.arrows.length); //pick a random option
+    }
+    this.chosenArrow = this.arrows[this.whichArrow]; //which arrow does it correspond to
+    this.chosenKeycode = this.keyCodes[this.whichArrow] //what keycode does it correspond to
     return this.chosenArrow; //return it why not
   };
 
@@ -27,7 +35,6 @@ function Arrow(leftArrow, rightArrow) {
 
   //function to show text
   this.showText = function(text) {
-    this.arrowElement.className = 'fail'; //add failure colour style
     this.arrowElement.innerHTML = text; //show the text
     return text; //return the text
   }

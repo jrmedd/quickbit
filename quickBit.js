@@ -1,4 +1,4 @@
-var arrow = new Arrow('<', '>'); //arrow construct and representations
+var arrow = new Arrow('<', '>', '#', '$'); //arrow construct and representations
 var pressedKeycode; //keycode of pressed key
 var pressTimer; //timeout for press response
 var currentTime; // current press time (debounce)
@@ -17,7 +17,10 @@ var frequencyIncrease = 2; //frequency increase on success
 voice1 = new simpleSynth(synthFrequency, 2, 2); //main voice
 voice2 = new simpleSynth(synthFrequency/2, 1.5, 1.9); //inharmonic voice
 
-arrow.chooseArrow(); //choose first arrow
+var highScoreTable = new HighScore('scores');
+highScoreTable.updateTable();
+
+arrow.chooseArrow(score); //choose first arrow
 arrow.showArrow(); // show first arrow
 
 //failure actions
@@ -29,6 +32,7 @@ function fail(){
   window.setTimeout(function(){
     gameDisabled = false; //reenable game
     document.getElementById("score").innerHTML = "Press button to start"; //ask them to play
+    arrow.chooseArrow(score);
     arrow.showArrow(); //show a new arrow
   }, 3000); // do all of this after so many seconds
   voice1.simpleEnv(audioCtx.currentTime, 180, 10, 50); //uh
@@ -48,7 +52,7 @@ function success() {
   window.clearTimeout(pressTimer); //cancel press response timer (they beat it)
   window.setTimeout(function() {
     comment.clearRating(); //clear the previous rating
-    arrow.chooseArrow(); //pick a new arrow
+    arrow.chooseArrow(score); //pick a new arrow
     arrow.showArrow(); //show a new arrow
     arrowShown = new Date().getTime();
     pressTimer = window.setTimeout(function(){

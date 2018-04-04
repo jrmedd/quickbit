@@ -1,9 +1,9 @@
 function HighScore(storagePlace) {
-  this.scoreDisplay = document.createElement("table");
-  this.scoreDisplay.id="scoreDisplay";
+  this.highScoreDisplay = document.createElement("table");
+  this.highScoreDisplay.id="highScoreDisplay";
   this.gameArea = document.getElementById("gameArea");
-  this.gameArea.appendChild(this.scoreDisplay);
-  this.scoreElement = document.getElementById("scoreDisplay");
+  this.gameArea.appendChild(this.highScoreDisplay);
+  this.highScoreElement = document.getElementById("highScoreDisplay");
   this.scores;
 
   this.getScores = function(){
@@ -33,10 +33,22 @@ function HighScore(storagePlace) {
     this.updatedTable += '<thead><tr><th>Rank</th><th>Score</th><th>Name</th></tr></thead>';
     this.updatedTable += '<tbody>';
     for (var i = 0; i < this.scores.length; i ++) {
+      if (i > 5) {
+        break;
+      }
       this.rank = i + 1;
       this.updatedTable += '<tr><td>'+this.rank+'</td><td>'+this.scores[i].score+'<td>'+this.scores[i].name+'</td></tr>'
     }
     this.updatedTable += '</tbody>';
-    this.scoreElement.innerHTML = this.updatedTable;
+    this.highScoreElement.innerHTML = this.updatedTable;
+  }
+
+  this.show = function() {
+    this.updateTable();
+    this.highScoreElement.style.display = 'block';
+  }
+
+  this.hide = function() {
+    this.highScoreElement.style.display = 'none';
   }
 }

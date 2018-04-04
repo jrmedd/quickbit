@@ -9,14 +9,16 @@ function Arrow(leftArrow, rightArrow, upArrow, downArrow) {
   this.chosenKeycode; //its corrresponding keycode
   this.arrowElement = document.getElementById("arrowDisplay"); //arrowDisplay element for referral later
   this.arrowElement.style.opacity = 1; //make it VISIBLE
+  this.easyThreshold = 10;
+  this.mediumThreshold = 20;
 
   //function to choose arrow
-  this.chooseArrow = function(score) {
-    if (score < 10) {
-      this.whichArrow = parseInt(Math.random()*arrow.arrows.length/2);
+  this.choose = function(score) {
+    if (score < this.easyThreshold) {
+      this.whichArrow = parseInt(Math.random()*this.arrows.length/2);
     }
-    else if (score < 20) {
-      this.whichArrow = parseInt(Math.random()*arrow.arrows.length/2)+2;
+    else if (score < this.mediumThreshold) {
+      this.whichArrow = parseInt(Math.random()*this.arrows.length/2)+this.arrows.length/2;
     }
     else {
       this.whichArrow = parseInt(Math.random()*arrow.arrows.length); //pick a random option
@@ -27,21 +29,21 @@ function Arrow(leftArrow, rightArrow, upArrow, downArrow) {
   };
 
   //function to show arrow
-  this.showArrow = function() {
+  this.show = function() {
     this.arrowElement.className = 'standard'; //reset visiblity and colour styles
     this.arrowElement.innerHTML = this.chosenArrow; //display the chosen arrow
     return this.chosenArrow; //return it why not
   };
 
   //function to show text
-  this.showText = function(text) {
-    this.arrowElement.innerHTML = text; //show the text
+  this.text = function(text) {
+    this.arrowElement.innerHTML = '<p>'+text+'</p>'; //show the text
     return text; //return the text
   }
 
   //function for clearing the arrow from screen
-  this.clearArrow = function() {
-    this.arrowElement.className = 'success fadeOut'; //fade it with succesfull colours
+  this.hide = function() {
+    this.arrowElement.className = 'success fadeOut'; //fade it with succesful colours
     return this.choosenArrow; //return it why not
   }
 };

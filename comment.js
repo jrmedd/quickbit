@@ -12,15 +12,15 @@ function Comment(expectation) {
   this.good = "Good";
   this.just = "Just";
 
-  this.perfectRating = 0.6;
-  this.greatRating = 0.65;
-  this.goodRating = 0.7;
-  this.justRating = 0.75;
+  this.perfectRating = 0.7;
+  this.greatRating = 0.8;
+  this.goodRating = 0.85;
+  this.justRating = 0.9;
 
   this.expectation = expectation;
   this.speed;
 
-  this.howWell = function(time) {
+  this.rate = function(time) {
     this.speed = (time*0.01)/(this.expectation*0.01);
     if (this.speed <= this.perfectRating) {
       this.rating = this.perfect;
@@ -34,17 +34,16 @@ function Comment(expectation) {
     else {
       this.rating = this.just;
     }
-    console.log(this.speed);
-    console.log(this.rating);
-  }
-
-  this.showRating = function() {
-    this.commentElement.className = 'standard';
-    this.commentElement.innerHTML = this.rating;
     return this.rating;
   }
 
-  this.clearRating = function() {
+  this.show = function(text) {
+    this.commentElement.className = 'standard';
+    this.commentElement.innerHTML = text;
+    return this.rating;
+  }
+
+  this.hide = function() {
     this.commentElement.className = 'fadeOut';
     return this.rating;
   }

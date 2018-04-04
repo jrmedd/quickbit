@@ -45,13 +45,14 @@ body {
   font-size: 2em;
 }
 
-#scoreDisplay {
+#highScoreDisplay {
   display: none;
   font-size: 2em;
-  width: 50%;
+  line-height: 1.5em;
+  max-width: 50%;
   text-align: center;
 }
-}
+
 
 @-webkit-keyframes fadeout {
   0% {opacity:1;}

@@ -19,7 +19,7 @@ voice1 = new simpleSynth(synthFrequency, 2, 2); //main voice
 voice2 = new simpleSynth(synthFrequency*0.5, 1.5, 1.9); //inharmonic voice
 introPip = new simpleSynth(360, 1, 0); // intro pip voice
 
-var highScoreTable = new HighScore('scores'); //create a scrore table
+var highScoreTable = new HighScore('scores', 5); //create a scrore table
 highScoreTable.updateTable(); //populate it with nout
 
 arrow.choose(score); //choose first arrow
@@ -29,6 +29,9 @@ function fail(){
   gameActive = false; //temporarily disable game
   arrow.text("GAME OVER"); //tell player it's over (sorry)
   document.getElementById("score").innerHTML = "You scored: " + score; //display their final score
+  if (score > highScoreTable.lowest) {
+    comment.show('New highscore!');
+  }
   window.setTimeout(function() {
     score = -1;// reset score for next play
     document.getElementById("score").innerHTML = "Press button to start"; //ask them to play
@@ -62,7 +65,7 @@ function success() {
       fail(); // they missed it
     }, responseWait); //if not before time
   }, showWait); // show the new arrow, after a time
-  arrow.hide()(); //clear it before then
+  arrow.hide(); //clear it before then
 }
 
 //detect keypresses

@@ -1,19 +1,32 @@
-function HighScore(storagePlace) {
+function HighScore(storagePlace, topPlaces) {
   this.highScoreDisplay = document.createElement("table");
   this.highScoreDisplay.id="highScoreDisplay";
   this.gameArea = document.getElementById("gameArea");
   this.gameArea.appendChild(this.highScoreDisplay);
   this.highScoreElement = document.getElementById("highScoreDisplay");
-  this.scores;
+  this.topPlaces = topPlaces;
+  this.scores =  JSON.parse(window.localStorage.getItem(storagePlace));
+  if (!this.scores) {
+    window.localStorage.setItem(storagePlace, JSON.stringify([
+        {'name':'QTE','score':30},
+        {'name':'LSK','score':24},
+        {'name':'DTD','score':18},
+        {'name':'RYO','score':12},
+        {'name':'JRM', 'score':3}
 
+    ]));
+    this.scores = JSON.parse(window.localStorage.getItem(storagePlace));
+  }
+  this.lowest = this.scores[this.topPlaces-1];
   this.getScores = function(){
-    this.scores = this.scores = JSON.parse(window.localStorage.getItem(storagePlace)) || [];
+    this.scores = this.scores = JSON.parse(window.localStorage.getItem(storagePlace));
+    this.lowest = this.scores[this.topPlaces-1].score;
     return this.scores;
   }
 
   this.addScore = function(newName, newScore) {
     this.getScores();
-    for (var i = 0; i < this.scores.length; i++) {
+    for (var i = 0; i < this.topPlaces; i++) {
       if (newScore > this.scores[i].score) {
         break;
       }
@@ -32,7 +45,7 @@ function HighScore(storagePlace) {
     this.updatedTable = '<caption>High Scores</caption>'
     this.updatedTable += '<thead><tr><th>Rank</th><th>Score</th><th>Name</th></tr></thead>';
     this.updatedTable += '<tbody>';
-    for (var i = 0; i < this.scores.length; i ++) {
+    for (var i = 0; i < this.topPlaces; i ++) {
       if (i > 5) {
         break;
       }

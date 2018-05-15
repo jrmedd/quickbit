@@ -1,15 +1,14 @@
 var arrow = new Arrow('<', '>', '#', '$'); //arrow construct and representations
 var pressedKeycode; //keycode of pressed key
 var pressTimer; //timeout for press response
-var currentTime; // current press time (debounce)
-var lastTime = new Date().getTime(); //last press time (debounce)
 var score = -1; // score..duh
 var gameActive = false; //disable game between fails
 var responseWait = 500; //time they've got to react
 var showWait = responseWait/2; //time between showing a new arrow
 var arrowShown; //when was the arrow shown (how fast were they?)
 var count; //countdown for intro in seconds
-
+var targetThreshold;
+var playerChallenged = false;
 var comment = new Comment(responseWait); //comment on performance
 
 var startingFrequency = 220; //starting frequency of audio
@@ -26,6 +25,7 @@ arrow.choose(score); //choose first arrow
 
 //failure actions
 function fail(){
+  playerChallenged = false;
   gameActive = false; //temporarily disable game
   arrow.text("GAME OVER"); //tell player it's over (sorry)
   document.getElementById("score").innerHTML = "You scored: " + score; //display their final score
@@ -55,43 +55,55 @@ function success() {
   if (score > 0){
     voice1.simpleEnv(audioCtx.currentTime, synthFrequency, 10, 50); //play freqency
   }
-  window.clearTimeout(pressTimer); //cancel press response timer (they beat it)
-  window.setTimeout(function() {
+  if (playerChallenged) {
+    targetThreshold --;
     comment.hide(); //clear the previous rating
-    arrow.choose(score); //pick a new arrow
-    arrow.show(); //show a new arrow
-    arrowShown = new Date().getTime();
-    pressTimer = window.setTimeout(function(){
-      fail(); // they missed it
-    }, responseWait); //if not before time
-  }, showWait); // show the new arrow, after a time
+    if (targetThreshold > 0) {
+      window.setTimeout(function() {
+      comment.hide(); //clear the previous rating
+      arrow.choose(score); //pick a new arrow
+      arrow.show(); //show a new arrow
+      arrowShown = new Date().getTime();
+      }, showWait); // show the new arrow, after a time
+    }
   arrow.hide(); //clear it before then
+  }
 }
 
 var triggers = [41, 42];
 function evaluate(pressedKeycode) {
   if (triggers.includes(pressedKeycode)) {
-    console.log("trigger");
+    if (gameActive) {
+      if (!playerChallenged) {
+        playerChallenged = true;
+        arrow.choose(score);
+        arrow.show();
+        targetThreshold = score < 10 ? 1 : parseInt(score*0.1)
+      }
+      if (playerChallenged && targetThreshold == 0) {
+        arrow.choose(score);
+        arrow.show();
+        targetThreshold = score < 10 ? 1 : parseInt(score*0.1)
+      }
+      else if (playerChallenged && targetThreshold > 0 && score > 0) {
+        fail();
+      }
+    }
   }
   else if (arrow.keyCodes.includes(pressedKeycode)) {
-    currentTime = new Date().getTime(); //when did they press it?
-    var difference =  currentTime - lastTime; //diference between this press and last press
     if (!gameActive && score < 0) {
       //highScoreTable.hide(); //hide the score table
       count = 3; //reset countdown timer
       startGame(); //countdown the game intro
     }
-    else if (gameActive && (difference) >= showWait && score >= 0) { //is it long enough since the last press (and are we playing?)
+    else if (playerChallenged && gameActive && score >= 0) { //is it long enough since the last press (and are we playing?)
       if (pressedKeycode == arrow.chosenKeycode && score >= 0) { //are they pressing the right key?
         success(); //they're successful
-        var rating = comment.rate(currentTime - arrowShown); //how quick were they?
-        comment.show(rating); //tell them!
       }
       else {
         fail(); //they're not
       }
     }
-    lastTime = currentTime; //remember when they last pressed
   }
 }
 
@@ -120,7 +132,7 @@ function startGame() {
     else {
       introPip.simpleEnv(audioCtx.currentTime, 720, 10, 200); //beeeeem
       comment.show("Go!"); //go go go
-      success(); //increment score to zero
+      score += 1; //increment score to zero
     }
   }, 750);
 }

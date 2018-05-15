@@ -5,9 +5,9 @@ function HighScore(storagePlace, topPlaces) {
   this.gameArea.appendChild(this.highScoreDisplay);
   this.highScoreElement = document.getElementById("highScoreDisplay");
   this.topPlaces = topPlaces;
-  this.scores =  JSON.parse(window.localStorage.getItem(storagePlace));
+  this.scores =  JSON.parse(chrome.storage.local.get(storagePlace));
   if (!this.scores) {
-    window.localStorage.setItem(storagePlace, JSON.stringify([
+    chrome.storage.local.set(storagePlace, JSON.stringify([
         {'name':'QTE','score':30},
         {'name':'LSK','score':24},
         {'name':'DTD','score':18},
@@ -15,11 +15,11 @@ function HighScore(storagePlace, topPlaces) {
         {'name':'JRM', 'score':3}
 
     ]));
-    this.scores = JSON.parse(window.localStorage.getItem(storagePlace));
+    this.scores = JSON.parse(chrome.storage.local.get(storagePlace));
   }
   this.lowest = this.scores[this.topPlaces-1];
   this.getScores = function(){
-    this.scores = this.scores = JSON.parse(window.localStorage.getItem(storagePlace));
+    this.scores = this.scores = JSON.parse(chrome.storage.local.get(storagePlace));
     this.lowest = this.scores[this.topPlaces-1].score;
     return this.scores;
   }
@@ -36,7 +36,7 @@ function HighScore(storagePlace, topPlaces) {
     this.newScores = this.newScores.concat(this.scores.slice(0, this.newScoreIndex));
     this.newScores = this.newScores.concat({name: newName, score: newScore});
     this.newScores = this.newScores.concat(this.scores.slice(this.newScoreIndex, this.scores.length));
-    window.localStorage.setItem(storagePlace, JSON.stringify(this.newScores));
+    chrome.storage.local.set(storagePlace, JSON.stringify(this.newScores));
     this.getScores();
   };
 

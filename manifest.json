@@ -1,0 +1,15 @@
+{
+  "manifest_version": 2,
+  "name": "Hazuki Knit",
+  "version": "0.1",
+  "icons": {
+    "1024": "icons/icon1024.png"
+  },
+  "permissions" : ["serial", "storage"],
+  "app": {
+    "background": {
+      "scripts": ["background.js"]
+    }
+  },
+  "minimum_chrome_version": "28"
+}

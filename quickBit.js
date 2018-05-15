@@ -19,8 +19,8 @@ voice1 = new simpleSynth(synthFrequency, 2, 2); //main voice
 voice2 = new simpleSynth(synthFrequency*0.5, 1.5, 1.9); //inharmonic voice
 introPip = new simpleSynth(360, 1, 0); // intro pip voice
 
-var highScoreTable = new HighScore('scores', 5); //create a scrore table
-highScoreTable.updateTable(); //populate it with nout
+//var highScoreTable = new HighScore('scores', 5); //create a scrore table
+//highScoreTable.updateTable(); //populate it with nout
 
 arrow.choose(score); //choose first arrow
 
@@ -29,14 +29,14 @@ function fail(){
   gameActive = false; //temporarily disable game
   arrow.text("GAME OVER"); //tell player it's over (sorry)
   document.getElementById("score").innerHTML = "You scored: " + score; //display their final score
-  if (score > highScoreTable.lowest) {
+  /*if (score > highScoreTable.lowest) {
     comment.show('New highscore!');
-  }
+  }*/
   window.setTimeout(function() {
     score = -1;// reset score for next play
     document.getElementById("score").innerHTML = "Press button to start"; //ask them to play
     arrow.text("");
-    highScoreTable.show();
+    //highScoreTable.show();
     arrow.choose(score);
   }, 3000); // do all of this after so many seconds
   voice1.simpleEnv(audioCtx.currentTime, 180, 10, 50); //uh
@@ -68,14 +68,16 @@ function success() {
   arrow.hide(); //clear it before then
 }
 
-//detect keypresses
-document.onkeydown = function(e) {
-  pressedKeycode = e.keyCode; //what did they press
-  if (arrow.keyCodes.includes(pressedKeycode)) { //did they press an expected key?
+var triggers = [41, 42];
+function evaluate(pressedKeycode) {
+  if (triggers.includes(pressedKeycode)) {
+    console.log("trigger");
+  }
+  else if (arrow.keyCodes.includes(pressedKeycode)) {
     currentTime = new Date().getTime(); //when did they press it?
     var difference =  currentTime - lastTime; //diference between this press and last press
     if (!gameActive && score < 0) {
-      highScoreTable.hide(); //hide the score table
+      //highScoreTable.hide(); //hide the score table
       count = 3; //reset countdown timer
       startGame(); //countdown the game intro
     }
@@ -90,6 +92,18 @@ document.onkeydown = function(e) {
       }
     }
     lastTime = currentTime; //remember when they last pressed
+  }
+}
+
+var onReceiveCallback = function(info) {
+  if (info.connectionId == connectionId && info.data) {
+    incoming += decoder.decode(info.data);
+    if (incoming.slice(-1) == "\n") {
+      if (incoming.length == 4) {
+        evaluate(parseInt(incoming.slice(0, -1)));
+      }
+      incoming = "";
+    }
   }
 };
 

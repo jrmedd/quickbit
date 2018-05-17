@@ -35,6 +35,11 @@ body {
   width: 100%;
 }
 
+#imageDisplay {
+  width: 50%;
+  position: fixed;
+}
+
 #score {
   position: fixed;
   bottom: 0;

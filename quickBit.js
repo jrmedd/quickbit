@@ -18,6 +18,8 @@ voice1 = new simpleSynth(synthFrequency, 2, 2); //main voice
 voice2 = new simpleSynth(synthFrequency*0.5, 1.5, 1.9); //inharmonic voice
 introPip = new simpleSynth(360, 1, 0); // intro pip voice
 
+var logo = new Image();
+logo.show('hazukiLogo.png');
 //var highScoreTable = new HighScore('scores', 5); //create a scrore table
 //highScoreTable.updateTable(); //populate it with nout
 
@@ -29,6 +31,7 @@ function fail(){
   playerChallenged = false;
   gameActive = false; //temporarily disable game
   arrow.text("GAME OVER"); //tell player it's over (sorry)
+  comment.hide();
   document.getElementById("score").innerHTML = "You scored: " + score; //display their final score
   /*if (score > highScoreTable.lowest) {
     comment.show('New highscore!');
@@ -39,7 +42,9 @@ function fail(){
     arrow.text("");
     //highScoreTable.show();
     arrow.choose(score);
+    logo.show();
     writeSerial("0"+"\n");
+    logo.show('hazukiLogo.png');
   }, 3000); // do all of this after so many seconds
   voice1.simpleEnv(audioCtx.currentTime, 180, 10, 50); //uh
   voice2.simpleEnv(audioCtx.currentTime, 160, 10, 50) //uh
@@ -125,6 +130,7 @@ var onReceiveCallback = function(info) {
 };
 
 function startGame() {
+  logo.hide();
   gameActive = true; //activate the game
   comment.show(count.toString()); //show countdown
   introPip.simpleEnv(audioCtx.currentTime, 360, 10, 75); //pip

@@ -1,3 +1,5 @@
+chrome.app.window.current().fullscreen();
+
 var arrow = new Arrow('<', '>', '#', '$'); //arrow construct and representations
 var pressedKeycode; //keycode of pressed key
 var pressTimer; //timeout for press response
@@ -5,12 +7,10 @@ var score = -1; // score..duh
 var gameActive = false; //disable game between fails
 var responseWait = 500; //time they've got to react
 var showWait = responseWait/2; //time between showing a new arrow
-var arrowShown; //when was the arrow shown (how fast were they?)
 var count; //countdown for intro in seconds
 var targetThreshold;
 var playerChallenged = false;
 var comment = new Comment(responseWait); //comment on performance
-
 var startingFrequency = 220; //starting frequency of audio
 var synthFrequency = startingFrequency; //synth frequency
 var frequencyIncrease = 2; //frequency increase on success
@@ -25,6 +25,7 @@ arrow.choose(score); //choose first arrow
 
 //failure actions
 function fail(){
+  writeSerial("2"+"\n");
   playerChallenged = false;
   gameActive = false; //temporarily disable game
   arrow.text("GAME OVER"); //tell player it's over (sorry)
@@ -38,6 +39,7 @@ function fail(){
     arrow.text("");
     //highScoreTable.show();
     arrow.choose(score);
+    writeSerial("0"+"\n");
   }, 3000); // do all of this after so many seconds
   voice1.simpleEnv(audioCtx.currentTime, 180, 10, 50); //uh
   voice2.simpleEnv(audioCtx.currentTime, 160, 10, 50) //uh
@@ -50,6 +52,7 @@ function fail(){
 //success actions
 function success() {
   score += 1; //increase score
+  writeSerial("1"+"\n");
   document.getElementById("score").innerHTML = "Score: " + score; //tell player their score
   synthFrequency += frequencyIncrease; //increase audio frequnecy (nail-bitingly)
   if (score > 0){
@@ -63,7 +66,7 @@ function success() {
       comment.hide(); //clear the previous rating
       arrow.choose(score); //pick a new arrow
       arrow.show(); //show a new arrow
-      arrowShown = new Date().getTime();
+      writeSerial("3"+"\n");
       }, showWait); // show the new arrow, after a time
     }
   arrow.hide(); //clear it before then
@@ -78,11 +81,13 @@ function evaluate(pressedKeycode) {
         playerChallenged = true;
         arrow.choose(score);
         arrow.show();
+        writeSerial("3"+"\n");
         targetThreshold = score < 10 ? 1 : parseInt(score*0.1)
       }
       if (playerChallenged && targetThreshold == 0) {
         arrow.choose(score);
         arrow.show();
+        writeSerial("3"+"\n");
         targetThreshold = score < 10 ? 1 : parseInt(score*0.1)
       }
       else if (playerChallenged && targetThreshold > 0 && score > 0) {
@@ -96,7 +101,7 @@ function evaluate(pressedKeycode) {
       count = 3; //reset countdown timer
       startGame(); //countdown the game intro
     }
-    else if (playerChallenged && gameActive && score >= 0) { //is it long enough since the last press (and are we playing?)
+    else if (playerChallenged && gameActive && score >= 0 && targetThreshold > 0) { //is it long enough since the last press (and are we playing?)
       if (pressedKeycode == arrow.chosenKeycode && score >= 0) { //are they pressing the right key?
         success(); //they're successful
       }
@@ -119,7 +124,6 @@ var onReceiveCallback = function(info) {
   }
 };
 
-
 function startGame() {
   gameActive = true; //activate the game
   comment.show(count.toString()); //show countdown
@@ -133,6 +137,7 @@ function startGame() {
       introPip.simpleEnv(audioCtx.currentTime, 720, 10, 200); //beeeeem
       comment.show("Go!"); //go go go
       score += 1; //increment score to zero
+      document.getElementById("score").innerHTML = "Score: " + score;
     }
   }, 750);
 }

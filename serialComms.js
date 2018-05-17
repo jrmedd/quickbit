@@ -1,7 +1,7 @@
-var preferredPort = '/dev/tty.usbmodem1421'; //preferred serial port (automatically picked)
+var preferredPort = '/dev/ttyACM0'; //preferred serial port (automatically picked)
 var incoming;
 var connectionId = -1; //null connection id before serial connection
-var encoder = new TextEncoder()
+var encoder = new TextEncoder();
 var decoder = new TextDecoder("utf-8");
 
 var selectedPort;
@@ -28,4 +28,21 @@ var onErrorCallback = function(info) {
   console.log("Serial connection closed");
   connectionId = -1;
   });
+};
+
+function writeSerial(str) {
+  chrome.serial.send(connectionId, convertStringToArrayBuffer(str), onSend);
+};
+
+function onSend(data){
+  console.log(data);
+}
+
+function convertStringToArrayBuffer(str) {
+  var buf=new ArrayBuffer(str.length);
+  var bufView=new Uint8Array(buf);
+  for (var i=0; i<str.length; i++) {
+    bufView[i]=str.charCodeAt(i);
+  }
+  return buf;
 };

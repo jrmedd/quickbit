@@ -26,6 +26,11 @@ body {
   font-size: 12em;
 }
 
+#imageDisplay {
+  position: fixed;
+  width: 50%;
+}
+
 #commentDisplay {
   position: absolute;
   bottom: 12.5%;

@@ -11,6 +11,7 @@ var arrowShown; //when was the arrow shown (how fast were they?)
 var count; //countdown for intro in seconds
 
 var comment = new Comment(responseWait); //comment on performance
+var logo = new Image();
 
 var startingFrequency = 220; //starting frequency of audio
 var synthFrequency = startingFrequency; //synth frequency
@@ -23,7 +24,7 @@ var highScoreTable = new HighScore('scores', 5); //create a scrore table
 highScoreTable.updateTable(); //populate it with nout
 
 arrow.choose(score); //choose first arrow
-
+logo.show('hazukiLogo.png');
 //failure actions
 function fail(){
   gameActive = false; //temporarily disable game
@@ -33,11 +34,15 @@ function fail(){
     comment.show('New highscore!');
   }
   window.setTimeout(function() {
-    score = -1;// reset score for next play
-    document.getElementById("score").innerHTML = "Press button to start"; //ask them to play
     arrow.text("");
     highScoreTable.show();
     arrow.choose(score);
+    window.setTimeout(function(){
+      highScoreTable.hide();
+      logo.show('hazukiLogo.png');
+      document.getElementById("score").innerHTML = "Press button to start"; //ask them to play
+      score = -1;// reset score for next play
+    }, 3000);
   }, 3000); // do all of this after so many seconds
   voice1.simpleEnv(audioCtx.currentTime, 180, 10, 50); //uh
   voice2.simpleEnv(audioCtx.currentTime, 160, 10, 50) //uh
@@ -93,8 +98,8 @@ document.onkeydown = function(e) {
   }
 };
 
-
 function startGame() {
+  logo.hide();
   gameActive = true; //activate the game
   comment.show(count.toString()); //show countdown
   introPip.simpleEnv(audioCtx.currentTime, 360, 10, 75); //pip

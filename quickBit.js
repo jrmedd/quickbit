@@ -32,6 +32,7 @@ function fail(){
   gameActive = false; //temporarily disable game
   arrow.text("GAME OVER"); //tell player it's over (sorry)
   comment.hide();
+  postScore(score);
   document.getElementById("score").innerHTML = "You scored: " + score; //display their final score
   /*if (score > highScoreTable.lowest) {
     comment.show('New highscore!');
@@ -87,13 +88,13 @@ function evaluate(pressedKeycode) {
         arrow.choose(score);
         arrow.show();
         writeSerial("3"+"\n");
-        targetThreshold = score < 10 ? 1 : parseInt(score*0.1)
+        targetThreshold = 1;
       }
       if (playerChallenged && targetThreshold == 0) {
         arrow.choose(score);
         arrow.show();
         writeSerial("3"+"\n");
-        targetThreshold = score < 10 ? 1 : parseInt(score*0.1)
+        targetThreshold = 1;
       }
       else if (playerChallenged && targetThreshold > 0 && score > 0) {
         fail();
@@ -146,4 +147,22 @@ function startGame() {
       document.getElementById("score").innerHTML = "Score: " + score;
     }
   }, 750);
+}
+
+
+function postScore(score_entry) {
+    var url = "http://hazukiscores.co.uk/entry";
+    fetch(url, {
+        method: "POST",
+        mode: 'cors',
+        cache: "no-cache",
+        credentials: "omit",
+        headers: {
+            "Content-Type": "application/json",
+            "X-Api-Key": ""
+        },
+        redirect: "follow",
+        referrer: "no-referrer",
+        body: JSON.stringify({ "score": score_entry })
+    });
 }

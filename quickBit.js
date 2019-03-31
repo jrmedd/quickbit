@@ -151,7 +151,7 @@ function startGame() {
 
 
 function postScore(score_entry) {
-    var url = "http://hazukiscores.co.uk/entry";
+    var url = "https://hazukiscores.xyz/entry";
     fetch(url, {
         method: "POST",
         mode: 'cors',
